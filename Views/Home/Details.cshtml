@@ -1,0 +1,40 @@
+@model Buch
+@{
+    ViewData["Title"] = Model.Titel;
+}
+
+<div class="detail">
+    <div class="detail-cover"><partial name="_Cover" model="Model" /></div>
+    <div class="detail-infos">
+        @if (Model.ReiheBandText is not null)
+        {
+            <p class="detail-reihe">@Model.ReiheBandText</p>
+        }
+        <h1 class="detail-titel">@Model.Titel</h1>
+        <p><strong>Autor:</strong> @(Model.Autor?.VollerName ?? "unbekannt")</p>
+        <p><strong>Genre:</strong> @(Model.Genres.Count > 0 ? string.Join(", ", Model.Genres.Select(g => g.Bezeichnung)) : "-")</p>
+        <p><strong>Altersempfehlung:</strong> @(Model.Altersklassifikationen.Count > 0 ? string.Join(", ", Model.Altersklassifikationen.Select(a => a.Bezeichnung)) : "-")</p>
+        @if (Model.ErscheinungsJahr is not null)
+        {
+            <p><strong>Erscheinungsjahr:</strong> @Model.ErscheinungsJahr</p>
+        }
+        @if (Model.AnzahlKapitel is not null)
+        {
+            <p><strong>Kapitel:</strong> @Model.AnzahlKapitel</p>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.Beschreibung))
+        {
+            <p class="detail-beschreibung">@Model.Beschreibung</p>
+        }
+
+        @if (User.IsInRole(Rollen.Admin))
+        {
+            <div class="detail-aktionen">
+                <a class="pill-btn klein" asp-controller="Admin" asp-action="BuchBearbeiten" asp-route-id="@Model.BuchID">Bearbeiten</a>
+                <form asp-controller="Admin" asp-action="BuchLoeschen" asp-route-id="@Model.BuchID" method="post" class="inline">
+                    <button type="submit" class="pill-btn klein gefahr" data-confirm="Das Buch „@Model.Titel“ wirklich löschen?">Löschen</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>

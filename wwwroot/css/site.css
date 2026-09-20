@@ -19,6 +19,7 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #0a0000;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -28,4 +29,874 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+
+/*Navbar styles*/
+:root {
+    --hintergrund: #0a0000;
+    --aktiv-blau: #2f4fd6;
+    --seitenrand: 40px;
+}
+
+body {
+    margin: 1em;
+    background-color: var(--hintergrund);
+    font-family: sans-serif;
+    color: #fff;
+}
+
+/* Inhalt nutzt die volle Breite (kein zentrierter Bootstrap-Container) */
+.container {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Navigationsleiste Layout */
+.navbar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 32px;
+    background-color: var(--hintergrund);
+    padding: 24px var(--seitenrand);
+}
+
+/* Home Icon Bild */
+.nav-icon {
+    flex: none;
+}
+
+/* Das PNG dient als Maske, so laesst sich das Icon beim Hover blau einfaerben */
+.icon-img {
+    width: 40px;
+    height: 40px;
+    display: block;
+    background-color: #fff;
+    -webkit-mask: var(--icon-url) center / contain no-repeat;
+    mask: var(--icon-url) center / contain no-repeat;
+    transition: background-color .25s ease, transform .25s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.nav-icon:hover .icon-img,
+.nav-icon:focus-visible .icon-img {
+    background-color: var(--aktiv-blau);
+    transform: scale(1.2);
+}
+
+/* Reiter: linksbuendig direkt neben dem Home-Icon, seitlich scrollbar */
+.nav-scroller {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-links {
+    flex: 0 1 auto;
+    min-width: 0;
+    display: flex;
+    justify-content: flex-start;
+    gap: 44px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding: 8px 0 6px;
+    scrollbar-width: none;
+}
+
+    .nav-links::-webkit-scrollbar {
+        display: none;
+    }
+
+/* Beim Drueberfahren: blaue Unterstreichung wachst von links nach rechts, Text "poppt" auf */
+.nav-link {
+    flex: none;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 22px;
+    padding: 0 0 4px;
+    background-image: linear-gradient(var(--aktiv-blau), var(--aktiv-blau));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0 3px;
+    transform-origin: 0 50%;
+    transition: background-size .25s ease, transform .25s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+    .nav-link:hover,
+    .nav-link:focus-visible {
+        color: var(--aktiv-blau);
+        background-size: 100% 3px;
+        transform: scale(1.12);
+    }
+
+/* Der angeklickte Reiter (aktuelle Seite) ist dunkelblau */
+.nav-link.active {
+    color: var(--aktiv-blau);
+}
+
+/* Pfeile zum seitlichen Scrollen: Dropdown-Pfeil, gedreht, ohne Kreis */
+.scroll-pfeil {
+    background: none;
+    border: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+    .scroll-pfeil img {
+        width: 30px;
+        height: 18px;
+        display: block;
+    }
+
+    .scroll-pfeil.scroll-links img {
+        transform: rotate(90deg);
+    }
+
+    .scroll-pfeil.scroll-rechts img {
+        transform: rotate(-90deg);
+    }
+
+    .scroll-pfeil:not(:disabled):hover {
+        opacity: .7;
+    }
+
+    .scroll-pfeil:disabled {
+        opacity: .25;
+        cursor: default;
+    }
+
+.nav-scroller .scroll-pfeil {
+    flex: none;
+    width: 28px;
+    height: 36px;
+}
+
+.nav-scroller:not([data-overflow]) .scroll-pfeil {
+    display: none;
+}
+
+/* Rechte Gruppe */
+.nav-controls {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Suchfeld */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon-img {
+    position: absolute;
+    left: 18px;
+    width: 20px;
+    height: 20px;
+}
+
+.search-box input {
+    background: transparent;
+    border: 1px solid #fff;
+    border-radius: 28px;
+    padding: 12px 20px 12px 48px;
+    color: #fff;
+    font-size: 18px;
+    outline: none;
+    width: 220px;
+}
+
+    .search-box input::placeholder {
+        color: #ccc;
+    }
+
+/* Gemeinsames Styling für Ovale Buttons */
+.pill-btn {
+    background: transparent;
+    border: 1px solid #fff;
+    border-radius: 28px;
+    color: #fff;
+    padding: 12px 28px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dropdown-icon-img {
+    width: 22px;
+    height: 14px;
+}
+
+.login-btn {
+    font-weight: 700;
+}
+
+/* Filter-Dropdown */
+.filter-menu {
+    background-color: var(--hintergrund);
+    border: 1px solid #fff;
+    border-radius: 14px;
+    min-width: 0;
+}
+
+    .filter-menu .dropdown-item.active {
+        background-color: #fff;
+        color: #000;
+    }
+
+/* Cover (Platzhalter, falls kein Bild hinterlegt ist) */
+.cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.cover-platzhalter {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px;
+    background: #222;
+    border: 1px solid #555;
+    font-size: .8rem;
+    color: #fff;
+}
+
+/* Startseite */
+.gruppe {
+    margin: 28px 0 0;
+}
+
+.gruppe-titel {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0 0 12px;
+    padding-left: var(--seitenrand);
+}
+
+/* Die Ueberschrift (.gruppe-titel) steht ausserhalb der Reihe und bleibt beim Scrollen stehen.
+   Die Pfeile sitzen in den seitlichen Raendern (--seitenrand), die Cover bleiben unverdeckt. */
+.buch-scroller {
+    position: relative;
+    padding: 0 var(--seitenrand);
+}
+
+    .buch-scroller .scroll-pfeil {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: var(--seitenrand);
+    }
+
+    .buch-scroller .scroll-links {
+        left: 0;
+    }
+
+    .buch-scroller .scroll-rechts {
+        right: 0;
+    }
+
+    .buch-scroller:not([data-overflow]) .scroll-pfeil {
+        visibility: hidden;
+    }
+
+.buch-reihe {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 40px;
+    overflow-x: auto;
+    padding: 8px 0 16px;
+    scrollbar-width: none;
+}
+
+    .buch-reihe::-webkit-scrollbar {
+        display: none;
+    }
+
+.buch-karte {
+    flex: none;
+    display: block;
+    width: 240px;
+    height: 360px;
+    transition: transform .15s;
+}
+
+    .buch-karte:hover {
+        transform: translateY(-4px);
+    }
+
+/* Listenansicht */
+.liste-layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 48px;
+    margin: 32px var(--seitenrand);
+}
+
+.buch-liste {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.listen-eintrag {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.listen-cover {
+    width: 150px;
+    height: 225px;
+    flex: none;
+}
+
+/* Beschreibung (Reihe/Band + Titel): beim Drueberfahren poppt sie auf, beide Zeilen bekommen die blaue Unterstreichung */
+.listen-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    font-size: .9rem;
+    transform-origin: 0 50%;
+    transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+    .listen-text span {
+        padding-bottom: 3px;
+        background-image: linear-gradient(var(--aktiv-blau), var(--aktiv-blau));
+        background-repeat: no-repeat;
+        background-position: 0 100%;
+        background-size: 0 3px;
+        transition: background-size .25s ease;
+    }
+
+.listen-eintrag:hover .listen-text,
+.listen-eintrag:focus-visible .listen-text {
+    color: var(--aktiv-blau);
+    transform: scale(1.12);
+}
+
+    .listen-eintrag:hover .listen-text span,
+    .listen-eintrag:focus-visible .listen-text span {
+        background-size: 100% 3px;
+    }
+
+/* Buecherstapel: gross, rechts am Rand und beim Scrollen mitlaufend (sticky), vertikal in der Fenstermitte */
+.buch-stapel {
+    position: sticky;
+    top: max(24px, calc(50vh - 220px));
+    flex: none;
+    align-self: flex-start;
+    margin-left: auto;
+    width: min(440px, 34vw);
+    height: auto;
+}
+
+/* Buchdetails */
+.detail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 56px;
+    margin: 48px var(--seitenrand) 0;
+}
+
+.detail-cover {
+    width: 380px;
+    height: 570px;
+    flex: none;
+}
+
+.detail-infos p {
+    margin: 0 0 10px;
+    font-size: 1.25rem;
+}
+/* Schmalere Fenster: Navigation etwas kompakter, Reiter scrollen seitlich */
+@media (max-width: 1100px) {
+    .navbar {
+        padding: 16px var(--seitenrand);
+        gap: 16px;
+    }
+
+    .icon-img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .nav-links {
+        gap: 28px;
+    }
+
+    .nav-link {
+        font-size: 18px;
+    }
+
+    .nav-controls {
+        gap: 10px;
+    }
+
+    .search-box input {
+        width: 140px;
+        font-size: 16px;
+    }
+
+    .pill-btn {
+        padding: 10px 18px;
+        font-size: 16px;
+    }
+}
+
+/* Angemeldeter Benutzername im Button */
+.konto-name {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filter-menu form {
+    margin: 0;
+}
+
+.filter-menu .dropdown-item-text {
+    color: #ccc;
+}
+
+/* Anmelden / Registrieren */
+.konto {
+    max-width: 380px;
+    margin: 40px auto 0;
+    text-align: center;
+}
+
+.konto-titel {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.konto-form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+    .konto-form label {
+        font-size: 1rem;
+        margin-top: 10px;
+    }
+
+.konto-input {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #fff;
+    border-radius: 28px;
+    padding: 12px 20px;
+    color: #fff;
+    font-size: 18px;
+    outline: none;
+}
+
+    .konto-input:focus {
+        border-color: var(--aktiv-blau);
+        box-shadow: 0 0 0 2px var(--aktiv-blau);
+    }
+
+.konto-btn {
+    align-self: center;
+    justify-content: center;
+    margin-top: 22px;
+    min-width: 200px;
+}
+
+    .konto-btn:hover {
+        border-color: var(--aktiv-blau);
+        color: var(--aktiv-blau);
+    }
+
+.konto-fehler {
+    color: #ff7b7b;
+    font-size: .95rem;
+}
+
+.konto-wechsel {
+    margin-top: 20px;
+}
+
+    .konto-wechsel a {
+        color: #fff;
+        font-weight: 600;
+    }
+
+        .konto-wechsel a:hover {
+            color: var(--aktiv-blau);
+        }
+
+/* Illustration: mix-blend-mode laesst den schwarzen JPEG-Hintergrund mit #0a0000 verschmelzen */
+.konto-bild {
+    display: block;
+    width: min(900px, 90%);
+    height: auto;
+    margin: 40px auto 0;
+    mix-blend-mode: lighten;
+}
+
+/* Laptop-Breiten: Suchfeld schmaler, damit mehr Reiter sichtbar bleiben */
+@media (max-width: 1400px) {
+    .search-box input {
+        width: 170px;
+    }
+}
+
+/* Bearbeiten-Button im Header (nur Admin) */
+a.pill-btn {
+    text-decoration: none;
+    color: #fff;
+}
+
+.bearbeiten-btn:hover {
+    border-color: var(--aktiv-blau);
+    color: var(--aktiv-blau);
+}
+
+/* Buchdetails: Titel, Beschreibung, Admin-Knoepfe */
+.detail {
+    flex-wrap: wrap;
+}
+
+.detail-infos {
+    max-width: 560px;
+}
+
+.detail-titel {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 16px;
+}
+
+.detail-reihe {
+    color: #ccc;
+    margin: 0 0 4px !important;
+}
+
+.detail-beschreibung {
+    margin-top: 18px !important;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.detail-aktionen {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* Admin-Bereich */
+form.inline {
+    display: inline;
+}
+
+.pill-btn.klein {
+    display: inline-flex;
+    padding: 8px 18px;
+    font-size: 15px;
+    line-height: 1.2;
+}
+
+.pill-btn.klein:hover,
+.pill-btn:not(.klein):not(.login-btn):hover {
+    border-color: var(--aktiv-blau);
+    color: var(--aktiv-blau);
+}
+
+.pill-btn.gefahr:hover {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+.admin {
+    margin: 0 var(--seitenrand) 60px;
+}
+
+    .admin h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 28px 0 8px;
+    }
+
+.admin-untertitel {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 28px 0 12px;
+}
+
+.admin-menue {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 36px;
+    padding-top: 8px;
+}
+
+.admin-hinweis,
+.admin-klein {
+    color: #bbb;
+    font-size: .9rem;
+}
+
+.admin-meldung,
+.admin-fehler {
+    margin: 16px 0 0;
+    padding: 12px 18px;
+    border-radius: 14px;
+    border: 1px solid;
+}
+
+.admin-meldung {
+    border-color: #3fbf7f;
+    color: #7be0aa;
+}
+
+.admin-fehler {
+    border-color: #ff6b6b;
+    color: #ff9c9c;
+}
+
+.admin-karten {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 24px;
+}
+
+.admin-karte {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 230px;
+    padding: 22px;
+    border: 1px solid #fff;
+    border-radius: 18px;
+    color: #fff;
+    text-decoration: none;
+    transition: border-color .2s, color .2s, transform .25s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+    .admin-karte:hover {
+        border-color: var(--aktiv-blau);
+        color: var(--aktiv-blau);
+        transform: scale(1.04);
+    }
+
+.admin-zahl {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.admin-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.admin-leiste {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 20px 0 8px;
+}
+
+.admin-suche {
+    display: flex;
+    gap: 10px;
+}
+
+.admin-input {
+    background: var(--hintergrund);
+    border: 1px solid #fff;
+    border-radius: 12px;
+    padding: 9px 14px;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    min-width: 0;
+}
+
+    .admin-input:focus {
+        border-color: var(--aktiv-blau);
+        box-shadow: 0 0 0 2px var(--aktiv-blau);
+    }
+
+    .admin-input option {
+        background: var(--hintergrund);
+        color: #fff;
+    }
+
+.admin-tabelle {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+    .admin-tabelle th {
+        text-align: left;
+        padding: 8px 12px;
+        border-bottom: 1px solid #fff;
+        font-size: .9rem;
+        color: #bbb;
+    }
+
+    .admin-tabelle td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #2a1a1a;
+        vertical-align: middle;
+    }
+
+    .admin-tabelle tr:hover td {
+        background: #140808;
+    }
+
+.admin-thumb img {
+    width: 40px;
+    height: 60px;
+    object-fit: cover;
+    display: block;
+}
+
+.admin-aktionen {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.admin-zeile {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+    .admin-zeile .admin-input {
+        flex: 1 1 180px;
+        max-width: 280px;
+    }
+
+.buch-form {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 32px;
+    margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+    .buch-form {
+        grid-template-columns: 1fr;
+    }
+}
+
+.buch-form label {
+    display: block;
+    margin: 14px 0 4px;
+    font-weight: 600;
+}
+
+.buch-form .admin-input {
+    width: 100%;
+}
+
+.buch-form-unten {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 14px;
+}
+
+.buch-loeschen {
+    margin-top: 28px;
+}
+
+.admin-zweispaltig {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px;
+}
+
+.admin-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+}
+
+.buch-form label.admin-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.cover-vorschau {
+    width: 200px;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #555;
+    margin-bottom: 8px;
+}
+
+    .cover-vorschau img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+.admin-klein a {
+    color: #fff;
+    text-decoration: underline;
+}
+
+    .admin-klein a:hover {
+        color: var(--aktiv-blau);
+    }
+
+/* Laptop-Breiten: Header-Knoepfe etwas kompakter, damit mehr Reiter Platz haben */
+@media (max-width: 1400px) {
+    .nav-controls {
+        gap: 10px;
+    }
+
+        .nav-controls .pill-btn {
+            padding: 10px 18px;
+            font-size: 16px;
+        }
+
+    .search-box input {
+        width: 150px;
+        font-size: 16px;
+    }
 }

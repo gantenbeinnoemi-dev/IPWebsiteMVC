@@ -1,0 +1,45 @@
+@model AutorenModel
+@{
+    ViewData["Title"] = "Autoren bearbeiten";
+    ViewData["AdminSeite"] = "autoren";
+}
+
+<div class="admin">
+    <partial name="_AdminMenue" />
+    <h1>Autoren</h1>
+
+    <h2 class="admin-untertitel">Neuen Autor hinzufügen</h2>
+    <form asp-action="AutorSpeichern" method="post" class="admin-zeile">
+        <input name="vorname" class="admin-input" placeholder="Vorname" maxlength="100" />
+        <input name="nachname" class="admin-input" placeholder="Nachname *" maxlength="100" required />
+        <select name="landId" class="admin-input">
+            <option value="">– Land –</option>
+            @foreach (var l in Model.Laender)
+            {
+                <option value="@l.LandID">@l.Name</option>
+            }
+        </select>
+        <button type="submit" class="pill-btn klein">+ Hinzufügen</button>
+    </form>
+
+    <h2 class="admin-untertitel">Vorhandene Autoren (@Model.Zeilen.Count)</h2>
+    @foreach (var a in Model.Zeilen)
+    {
+        <form asp-action="AutorSpeichern" method="post" class="admin-zeile">
+            <input type="hidden" name="id" value="@a.Id" />
+            <input name="vorname" value="@a.Vorname" class="admin-input" placeholder="Vorname" maxlength="100" />
+            <input name="nachname" value="@a.Nachname" class="admin-input" placeholder="Nachname" maxlength="100" required />
+            <select name="landId" class="admin-input">
+                <option value="">– Land –</option>
+                @foreach (var l in Model.Laender)
+                {
+                    <option value="@l.LandID" selected="@(a.LandId == l.LandID)">@l.Name</option>
+                }
+            </select>
+            <button type="submit" class="pill-btn klein">Speichern</button>
+            <button type="submit" formaction="@Url.Action("AutorLoeschen")" class="pill-btn klein gefahr"
+                    data-confirm="Den Autor „@a.Vorname @a.Nachname“ wirklich löschen?">Löschen</button>
+            <span class="admin-klein">@a.AnzahlBuecher Buch/Bücher</span>
+        </form>
+    }
+</div>

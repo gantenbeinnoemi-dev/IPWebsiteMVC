@@ -1,0 +1,27 @@
+@{
+    var seite = ViewData["AdminSeite"] as string ?? "";
+    var punkte = new (string Key, string Text, string Aktion, string? Typ)[]
+    {
+        ("index", "Übersicht", "Index", null),
+        ("buecher", "Bücher", "Buecher", null),
+        ("autoren", "Autoren", "Autoren", null),
+        ("land", "Länder", "Stammdaten", "land"),
+        ("genre", "Genres", "Stammdaten", "genre"),
+        ("alter", "Altersklassen", "Stammdaten", "alter")
+    };
+}
+<nav class="admin-menue">
+    @foreach (var p in punkte)
+    {
+        <a asp-controller="Admin" asp-action="@p.Aktion" asp-route-typ="@p.Typ" class="nav-link @(seite == p.Key ? "active" : "")">@p.Text</a>
+    }
+</nav>
+
+@if (TempData["Meldung"] is string meldung)
+{
+    <div class="admin-meldung" role="status">@meldung</div>
+}
+@if (TempData["Fehler"] is string fehler)
+{
+    <div class="admin-fehler" role="alert">@fehler</div>
+}

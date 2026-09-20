@@ -1,0 +1,119 @@
+@model BuchFormModel
+@{
+    var neu = Model.BuchID == 0;
+    ViewData["Title"] = neu ? "Neues Buch" : "Buch bearbeiten";
+    ViewData["AdminSeite"] = "buecher";
+    var autoren = new SelectList(Model.Autoren.Select(a => new { a.AutorID, Name = a.VollerName }), "AutorID", "Name", Model.AutorID);
+}
+
+<div class="admin">
+    <partial name="_AdminMenue" />
+    <h1>@(neu ? "Neues Buch" : "Buch bearbeiten")</h1>
+
+    <form asp-action="@(neu ? "BuchNeu" : "BuchBearbeiten")" asp-route-id="@(neu ? null : Model.BuchID)" method="post" enctype="multipart/form-data" class="buch-form">
+        <div asp-validation-summary="ModelOnly" class="konto-fehler"></div>
+
+        <div class="buch-form-links">
+            <label asp-for="Titel">Titel *</label>
+            <input asp-for="Titel" class="admin-input" maxlength="255" />
+            <span asp-validation-for="Titel" class="konto-fehler"></span>
+
+            <div class="admin-zweispaltig">
+                <div>
+                    <label asp-for="Reihe">Reihe (optional)</label>
+                    <input asp-for="Reihe" class="admin-input" maxlength="255" placeholder="z.B. Land of Stories" />
+                    <span asp-validation-for="Reihe" class="konto-fehler"></span>
+                </div>
+                <div>
+                    <label asp-for="Band">Band</label>
+                    <input asp-for="Band" type="number" min="1" class="admin-input" />
+                    <span asp-validation-for="Band" class="konto-fehler"></span>
+                </div>
+            </div>
+
+            <label asp-for="AutorID">Autor</label>
+            <select asp-for="AutorID" asp-items="autoren" class="admin-input">
+                <option value="">– unbekannt –</option>
+            </select>
+            <span asp-validation-for="AutorID" class="konto-fehler"></span>
+            <span class="admin-klein">Fehlt der Autor? Lege ihn zuerst unter <a asp-action="Autoren">Autoren</a> an.</span>
+
+            <div class="admin-zweispaltig">
+                <div>
+                    <label asp-for="ErscheinungsJahr">Erscheinungsjahr</label>
+                    <input asp-for="ErscheinungsJahr" type="number" class="admin-input" />
+                    <span asp-validation-for="ErscheinungsJahr" class="konto-fehler"></span>
+                </div>
+                <div>
+                    <label asp-for="AnzahlKapitel">Anzahl Kapitel</label>
+                    <input asp-for="AnzahlKapitel" type="number" min="0" class="admin-input" />
+                    <span asp-validation-for="AnzahlKapitel" class="konto-fehler"></span>
+                </div>
+            </div>
+
+            <label>Genres</label>
+            <div class="admin-checks">
+                @foreach (var g in Model.Genres)
+                {
+                    <label class="admin-check"><input type="checkbox" name="GenreIds" value="@g.GenreID" checked="@Model.GenreIds.Contains(g.GenreID)" /> @g.Bezeichnung</label>
+                }
+            </div>
+
+            <label>Altersempfehlung</label>
+            <div class="admin-checks">
+                @foreach (var a in Model.Altersklassen)
+                {
+                    <label class="admin-check"><input type="checkbox" name="AlterIds" value="@a.AltersklassifikationID" checked="@Model.AlterIds.Contains(a.AltersklassifikationID)" /> @a.Bezeichnung</label>
+                }
+            </div>
+
+            <label asp-for="Beschreibung">Beschreibung</label>
+            <textarea asp-for="Beschreibung" class="admin-input" rows="8" maxlength="5000"></textarea>
+            <span asp-validation-for="Beschreibung" class="konto-fehler"></span>
+        </div>
+
+        <div class="buch-form-rechts">
+            <label>Cover</label>
+            <div class="cover-vorschau">
+                @if (!string.IsNullOrEmpty(Model.AktuellesCover))
+                {
+                    <img id="cover-vorschau" src="@Model.AktuellesCover" alt="Aktuelles Cover" />
+                }
+                else
+                {
+                    <img id="cover-vorschau" src="" alt="" hidden />
+                    <span class="admin-klein" id="cover-leer">Noch kein Cover</span>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(Model.AktuellesCover))
+            {
+                <span class="admin-klein">@Model.AktuellesCover</span>
+            }
+
+            <label asp-for="CoverDatei">Neues Cover hochladen (JPG, PNG, WebP, GIF, max. 5 MB)</label>
+            <input asp-for="CoverDatei" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="admin-input" data-vorschau="cover-vorschau" />
+            <span asp-validation-for="CoverDatei" class="konto-fehler"></span>
+
+            <label asp-for="CoverBildUrl">oder Cover-Adresse (URL oder Pfad)</label>
+            <input asp-for="CoverBildUrl" class="admin-input" maxlength="500" placeholder="https://... oder /images/covers/bild.jpg" />
+            <span asp-validation-for="CoverBildUrl" class="konto-fehler"></span>
+
+            @if (!neu && !string.IsNullOrEmpty(Model.AktuellesCover))
+            {
+                <label class="admin-check"><input asp-for="CoverEntfernen" type="checkbox" /> Cover entfernen</label>
+            }
+        </div>
+
+        <div class="buch-form-unten">
+            <button type="submit" class="pill-btn">Speichern</button>
+            <a class="pill-btn" asp-action="Buecher">Abbrechen</a>
+        </div>
+    </form>
+
+    @if (!neu)
+    {
+        <form asp-action="BuchLoeschen" asp-route-id="@Model.BuchID" method="post" class="buch-loeschen">
+            <button type="submit" class="pill-btn klein gefahr" data-confirm="Das Buch „@Model.Titel“ wirklich löschen?">Dieses Buch löschen</button>
+        </form>
+    }
+</div>

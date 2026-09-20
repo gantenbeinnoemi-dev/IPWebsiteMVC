@@ -1,8 +1,23 @@
-﻿@{
-    ViewData["Title"] = "Noemis Page";
+@model List<BuchGruppe>
+@{
+    ViewData["Title"] = "MyBooks";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@foreach (var gruppe in Model)
+{
+    <section class="gruppe">
+        <h2 class="gruppe-titel">@gruppe.Name</h2>
+        <div class="buch-scroller" data-scroller>
+            <button type="button" class="scroll-pfeil scroll-links" data-scroll-links aria-label="Nach links scrollen"><img src="~/images/dropdown.png" alt="" /></button>
+            <div class="buch-reihe" data-scroll-area>
+                @foreach (var buch in gruppe.Buecher)
+                {
+                    <a asp-action="Details" asp-route-id="@buch.BuchID" class="buch-karte" title="@buch.Titel">
+                        <partial name="_Cover" model="buch" />
+                    </a>
+                }
+            </div>
+            <button type="button" class="scroll-pfeil scroll-rechts" data-scroll-rechts aria-label="Nach rechts scrollen"><img src="~/images/dropdown.png" alt="" /></button>
+        </div>
+    </section>
+}

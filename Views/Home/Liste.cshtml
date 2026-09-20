@@ -1,0 +1,25 @@
+@model BuchGruppe
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="liste-layout">
+    <ul class="buch-liste">
+        @foreach (var buch in Model.Buecher)
+        {
+            <li>
+                <a asp-action="Details" asp-route-id="@buch.BuchID" class="listen-eintrag">
+                    <span class="listen-cover"><partial name="_Cover" model="buch" /></span>
+                    <span class="listen-text">
+                        @if (buch.ReiheBandText is not null)
+                        {
+                            <span>@buch.ReiheBandText</span>
+                        }
+                        <span>@buch.Titel</span>
+                    </span>
+                </a>
+            </li>
+        }
+    </ul>
+    <img src="~/images/bookstack.png" alt="" class="buch-stapel" />
+</div>

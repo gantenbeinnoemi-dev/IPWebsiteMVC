@@ -1,0 +1,27 @@
+@model AnmeldenModel
+@{
+    ViewData["Title"] = "Anmelden";
+    Layout = "_Login_Layout";
+}
+
+<div class="konto">
+    <h1 class="konto-titel">Anmelden</h1>
+
+    <form asp-action="Anmelden" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="konto-form">
+        <div asp-validation-summary="ModelOnly" class="konto-fehler"></div>
+
+        <label asp-for="Benutzername">Benutzername:</label>
+        <input asp-for="Benutzername" class="konto-input" autocomplete="username" autofocus />
+        <span asp-validation-for="Benutzername" class="konto-fehler"></span>
+
+        <label asp-for="Passwort">Passwort:</label>
+        <input asp-for="Passwort" class="konto-input" autocomplete="current-password" />
+        <span asp-validation-for="Passwort" class="konto-fehler"></span>
+
+        <button type="submit" class="pill-btn konto-btn">Anmelden</button>
+    </form>
+
+    <p class="konto-wechsel">Noch kein Konto? <a asp-action="Registrieren" asp-route-returnUrl="@ViewData["ReturnUrl"]">Registrieren</a></p>
+</div>
+
+<img src="~/images/login-books.jpg" alt="" class="konto-bild" />

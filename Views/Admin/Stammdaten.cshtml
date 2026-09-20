@@ -1,0 +1,34 @@
+@model StammdatenModel
+@{
+    ViewData["Title"] = Model.Titel + " bearbeiten";
+    ViewData["AdminSeite"] = Model.Typ;
+}
+
+<div class="admin">
+    <partial name="_AdminMenue" />
+    <h1>@Model.Titel</h1>
+
+    <h2 class="admin-untertitel">Neu hinzufügen</h2>
+    <form asp-action="StammdatenSpeichern" method="post" class="admin-zeile">
+        <input type="hidden" name="typ" value="@Model.Typ" />
+        <input name="text" class="admin-input" placeholder="@Model.Einzahl" maxlength="100" required />
+        <button type="submit" class="pill-btn klein">+ Hinzufügen</button>
+    </form>
+
+    <h2 class="admin-untertitel">Vorhanden (@Model.Zeilen.Count)</h2>
+    @foreach (var z in Model.Zeilen)
+    {
+        var warnung = z.Anzahl > 0 && Model.Typ != "land"
+            ? $" Sie wird bei {z.Anzahl} {Model.AnzahlBeschriftung} entfernt."
+            : "";
+        <form asp-action="StammdatenSpeichern" method="post" class="admin-zeile">
+            <input type="hidden" name="typ" value="@Model.Typ" />
+            <input type="hidden" name="id" value="@z.Id" />
+            <input name="text" value="@z.Text" class="admin-input" maxlength="100" required />
+            <button type="submit" class="pill-btn klein">Speichern</button>
+            <button type="submit" formaction="@Url.Action("StammdatenLoeschen")" class="pill-btn klein gefahr"
+                    data-confirm="„@z.Text“ wirklich löschen?@warnung">Löschen</button>
+            <span class="admin-klein">@z.Anzahl @Model.AnzahlBeschriftung</span>
+        </form>
+    }
+</div>

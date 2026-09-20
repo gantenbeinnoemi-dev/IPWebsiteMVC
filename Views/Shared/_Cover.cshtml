@@ -1,0 +1,10 @@
+@model Buch
+
+@if (!string.IsNullOrEmpty(Model.CoverBildUrl))
+{
+    <img src="@Model.CoverBildUrl" alt="@Model.Titel" class="cover-img" />
+}
+else
+{
+    <div class="cover-platzhalter">@Model.Titel</div>
+}

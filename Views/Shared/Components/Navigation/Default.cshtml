@@ -1,0 +1,65 @@
+@model NavigationModel
+
+<div class="nav-scroller" data-scroller>
+    <button type="button" class="scroll-pfeil scroll-links" data-scroll-links aria-label="Nach links scrollen"><img src="~/images/dropdown.png" alt="" /></button>
+    <div class="nav-links" data-scroll-area>
+        @foreach (var tab in Model.Tabs)
+        {
+            <a href="@tab.Url" class="nav-link @(tab.Active ? "active" : "")">@tab.Text</a>
+        }
+    </div>
+    <button type="button" class="scroll-pfeil scroll-rechts" data-scroll-rechts aria-label="Nach rechts scrollen"><img src="~/images/dropdown.png" alt="" /></button>
+</div>
+
+<div class="nav-controls">
+    @if (Model.IstAdmin)
+    {
+        <a asp-controller="Admin" asp-action="Index" class="pill-btn bearbeiten-btn">Bearbeiten</a>
+    }
+
+    <div class="search-box">
+        <img src="~/images/search.png" alt="Suchen" class="search-icon-img" />
+        <input type="text" placeholder="Suche..." />
+    </div>
+
+    <div class="dropdown">
+        <button class="pill-btn dropdown-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @IPWebsiteMVC.Services.KatalogService.FilterLabel(Model.Filter)
+            <img src="~/images/dropdown.png" alt="Pfeil" class="dropdown-icon-img" />
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark filter-menu">
+            <li><a class="dropdown-item @(Model.Filter == "genre" ? "active" : "")" asp-controller="Home" asp-action="Index" asp-route-filter="genre">Genre</a></li>
+            <li><a class="dropdown-item @(Model.Filter == "autor" ? "active" : "")" asp-controller="Home" asp-action="Index" asp-route-filter="autor">Autor</a></li>
+            <li><a class="dropdown-item @(Model.Filter == "alter" ? "active" : "")" asp-controller="Home" asp-action="Index" asp-route-filter="alter">Altersklasse</a></li>
+        </ul>
+    </div>
+
+    @{
+        var zurueck = Context.Request.Path + Context.Request.QueryString;
+    }
+    <div class="dropdown">
+        @if (Model.Benutzername is null)
+        {
+            <button class="pill-btn login-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">Anmelden</button>
+            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end filter-menu">
+                <li><a class="dropdown-item" asp-controller="Konto" asp-action="Anmelden" asp-route-returnUrl="@zurueck">Anmelden</a></li>
+                <li><a class="dropdown-item" asp-controller="Konto" asp-action="Registrieren" asp-route-returnUrl="@zurueck">Registrieren</a></li>
+            </ul>
+        }
+        else
+        {
+            <button class="pill-btn login-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="konto-name">@Model.Benutzername</span>
+                <img src="~/images/dropdown.png" alt="Pfeil" class="dropdown-icon-img" />
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end filter-menu">
+                <li><span class="dropdown-item-text">Angemeldet als <strong>@Model.Benutzername</strong>@(Model.IstAdmin ? " (Admin)" : "")</span></li>
+                <li>
+                    <form asp-controller="Konto" asp-action="Abmelden" method="post">
+                        <button type="submit" class="dropdown-item">Abmelden</button>
+                    </form>
+                </li>
+            </ul>
+        }
+    </div>
+</div>

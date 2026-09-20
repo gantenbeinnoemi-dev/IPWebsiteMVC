@@ -1,0 +1,39 @@
+@model AdminUebersichtModel
+@{
+    ViewData["Title"] = "Bearbeiten";
+    ViewData["AdminSeite"] = "index";
+}
+
+<div class="admin">
+    <partial name="_AdminMenue" />
+    <h1>Bearbeiten</h1>
+    <p class="admin-hinweis">Hier verwaltest du alle Daten der Website. Änderungen werden sofort in der Datenbank gespeichert.</p>
+
+    <div class="admin-karten">
+        <a class="admin-karte" asp-action="Buecher">
+            <span class="admin-zahl">@Model.Buecher</span>
+            <span class="admin-name">Bücher</span>
+            <span class="admin-klein">hinzufügen, ändern, löschen, Cover und Beschreibung</span>
+        </a>
+        <a class="admin-karte" asp-action="Autoren">
+            <span class="admin-zahl">@Model.Autoren</span>
+            <span class="admin-name">Autoren</span>
+            <span class="admin-klein">Name und Land</span>
+        </a>
+        <a class="admin-karte" asp-action="Stammdaten" asp-route-typ="land">
+            <span class="admin-zahl">@Model.Laender</span>
+            <span class="admin-name">Länder</span>
+            <span class="admin-klein">Herkunft der Autoren</span>
+        </a>
+        <a class="admin-karte" asp-action="Stammdaten" asp-route-typ="genre">
+            <span class="admin-zahl">@Model.Genres</span>
+            <span class="admin-name">Genres</span>
+            <span class="admin-klein">die Reiter auf der Startseite</span>
+        </a>
+        <a class="admin-karte" asp-action="Stammdaten" asp-route-typ="alter">
+            <span class="admin-zahl">@Model.Altersklassen</span>
+            <span class="admin-name">Altersklassen</span>
+            <span class="admin-klein">Altersempfehlungen</span>
+        </a>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+@model List<Buch>
+@{
+    ViewData["Title"] = "Bücher bearbeiten";
+    ViewData["AdminSeite"] = "buecher";
+}
+
+<div class="admin">
+    <partial name="_AdminMenue" />
+    <h1>Bücher</h1>
+
+    <div class="admin-leiste">
+        <form method="get" asp-action="Buecher" class="admin-suche">
+            <input name="q" value="@ViewData["Q"]" class="admin-input" placeholder="Suchen (Titel, Reihe, Autor)" />
+            <button type="submit" class="pill-btn klein">Suchen</button>
+        </form>
+        <a class="pill-btn klein" asp-action="BuchNeu">+ Neues Buch</a>
+    </div>
+
+    <p class="admin-hinweis">@Model.Count Buch/Bücher, zuletzt hinzugefügte zuerst.</p>
+
+    <table class="admin-tabelle">
+        <thead>
+            <tr><th></th><th>Titel</th><th>Autor</th><th>Genre</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var b in Model)
+            {
+                <tr>
+                    <td class="admin-thumb">
+                        @if (!string.IsNullOrEmpty(b.CoverBildUrl))
+                        {
+                            <img src="@b.CoverBildUrl" alt="" />
+                        }
+                    </td>
+                    <td>
+                        @if (b.ReiheBandText is not null)
+                        {
+                            <div class="admin-klein">@b.ReiheBandText</div>
+                        }
+                        @b.Titel
+                    </td>
+                    <td>@(b.Autor?.VollerName ?? "-")</td>
+                    <td>@(b.Genres.Count > 0 ? string.Join(", ", b.Genres.Select(g => g.Bezeichnung)) : "-")</td>
+                    <td class="admin-aktionen">
+                        <a class="pill-btn klein" asp-action="BuchBearbeiten" asp-route-id="@b.BuchID">Bearbeiten</a>
+                        <form asp-action="BuchLoeschen" asp-route-id="@b.BuchID" method="post" class="inline">
+                            <button type="submit" class="pill-btn klein gefahr" data-confirm="Das Buch „@b.Titel“ wirklich löschen?">Löschen</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
