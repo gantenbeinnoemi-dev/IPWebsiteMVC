@@ -1,12 +1,25 @@
 @model List<BuchGruppe>
 @{
     ViewData["Title"] = "MyBooks";
+    var istBenutzer = ViewData["Filter"] as string == "benutzer";
 }
 
 @foreach (var gruppe in Model)
 {
     <section class="gruppe">
-        <h2 class="gruppe-titel">@gruppe.Name</h2>
+        @if (istBenutzer)
+        {
+            <div class="gruppe-kopf">
+                <h2 class="gruppe-titel">@gruppe.Name</h2>
+                <form asp-controller="Kategorie" asp-action="Loeschen" asp-route-id="@gruppe.Id" method="post">
+                    <button type="submit" class="pill-btn klein gefahr" data-confirm="Die Kategorie „@gruppe.Name“ wirklich löschen? Die Bücher selbst bleiben erhalten.">Kategorie löschen</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <h2 class="gruppe-titel">@gruppe.Name</h2>
+        }
         <div class="buch-scroller" data-scroller>
             <button type="button" class="scroll-pfeil scroll-links" data-scroll-links aria-label="Nach links scrollen"><img src="~/images/dropdown.png" alt="" /></button>
             <div class="buch-reihe" data-scroll-area>
@@ -16,8 +29,21 @@
                         <partial name="_Cover" model="buch" />
                     </a>
                 }
+                @if (istBenutzer)
+                {
+                    <a asp-controller="Kategorie" asp-action="BuecherHinzufuegen" asp-route-id="@gruppe.Id" class="buch-karte" title="Bücher hinzufügen">
+                        <img src="~/images/buch-plus.svg" alt="Bücher hinzufügen" class="cover-img" />
+                    </a>
+                }
             </div>
             <button type="button" class="scroll-pfeil scroll-rechts" data-scroll-rechts aria-label="Nach rechts scrollen"><img src="~/images/dropdown.png" alt="" /></button>
         </div>
+    </section>
+}
+
+@if (istBenutzer)
+{
+    <section class="gruppe">
+        <h2 class="gruppe-titel"><a asp-controller="Kategorie" asp-action="Neu" class="gruppe-link">+ Neue Kategorie</a></h2>
     </section>
 }

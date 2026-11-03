@@ -11,6 +11,8 @@ public class MyBooksDbContext(DbContextOptions<MyBooksDbContext> options) : DbCo
     public DbSet<Genre> Genres => Set<Genre>();
     public DbSet<Altersklassifikation> Altersklassifikationen => Set<Altersklassifikation>();
     public DbSet<Benutzer> Benutzer => Set<Benutzer>();
+    public DbSet<Kategorie> Kategorien => Set<Kategorie>();
+    public DbSet<KategorieBuch> KategorieBuecher => Set<KategorieBuch>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -20,6 +22,20 @@ public class MyBooksDbContext(DbContextOptions<MyBooksDbContext> options) : DbCo
         modelBuilder.Entity<Genre>().ToTable("Genre");
         modelBuilder.Entity<Altersklassifikation>().ToTable("Altersklassifikation");
         modelBuilder.Entity<Benutzer>().ToTable("Benutzer");
+
+        modelBuilder.Entity<Kategorie>(e =>
+        {
+            e.ToTable("Kategorie");
+            e.HasOne<Benutzer>().WithMany().HasForeignKey(k => k.BenutzerID);
+        });
+
+        modelBuilder.Entity<KategorieBuch>(e =>
+        {
+            e.ToTable("Kategorie_Buch");
+            e.HasKey(x => new { x.KategorieID, x.BuchID });
+            e.HasOne(x => x.Kategorie).WithMany(k => k.Eintraege).HasForeignKey(x => x.KategorieID);
+            e.HasOne(x => x.Buch).WithMany().HasForeignKey(x => x.BuchID);
+        });
 
         modelBuilder.Entity<Buch>()
             .HasMany(b => b.Genres).WithMany(g => g.Buecher)

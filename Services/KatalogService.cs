@@ -10,6 +10,7 @@ public class KatalogService(MyBooksDbContext db)
     {
         "autor" => "autor",
         "alter" => "alter",
+        "benutzer" => "benutzer",
         _ => "genre"
     };
 
@@ -17,8 +18,46 @@ public class KatalogService(MyBooksDbContext db)
     {
         "autor" => "Autor",
         "alter" => "Altersklasse",
+        "benutzer" => "Benutzerdefiniert",
         _ => "Genre"
     };
+
+    // ---------------------------------------------------------------- Benutzerdefinierte Kategorien
+
+    /// <summary>Alle Kategorien des Benutzers (auch leere), Bücher in der Reihenfolge des Hinzufügens.</summary>
+    public async Task<List<BuchGruppe>> GetKategorienAsync(int benutzerId)
+    {
+        var kategorien = await db.Kategorien
+            .Where(k => k.BenutzerID == benutzerId)
+            .Include(k => k.Eintraege).ThenInclude(e => e.Buch)
+            .OrderBy(k => k.ErstelltAm).ThenBy(k => k.KategorieID)
+            .ToListAsync();
+        return kategorien.Select(KategorieZuGruppe).ToList();
+    }
+
+    public async Task<BuchGruppe?> GetKategorieAsync(int benutzerId, int id)
+    {
+        var kategorie = await db.Kategorien
+            .Where(k => k.BenutzerID == benutzerId && k.KategorieID == id)
+            .Include(k => k.Eintraege).ThenInclude(e => e.Buch)
+            .FirstOrDefaultAsync();
+        return kategorie is null ? null : KategorieZuGruppe(kategorie);
+    }
+
+    /// <summary>Nur Id und Name, für die Reiter in der Navigation.</summary>
+    public async Task<List<(int Id, string Name)>> GetKategorieNamenAsync(int benutzerId)
+    {
+        var zeilen = await db.Kategorien
+            .Where(k => k.BenutzerID == benutzerId)
+            .OrderBy(k => k.ErstelltAm).ThenBy(k => k.KategorieID)
+            .Select(k => new { k.KategorieID, k.Name })
+            .ToListAsync();
+        return zeilen.Select(z => (z.KategorieID, z.Name)).ToList();
+    }
+
+    private static BuchGruppe KategorieZuGruppe(Kategorie k) =>
+        new(k.KategorieID, k.Name,
+            k.Eintraege.OrderBy(e => e.HinzugefuegtAm).ThenBy(e => e.BuchID).Select(e => e.Buch!).ToList());
 
     public async Task<List<BuchGruppe>> GetGruppenAsync(string filter)
     {

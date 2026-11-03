@@ -1,0 +1,36 @@
+@model (BuchAuswahlModel Auswahl, List<IGrouping<string, Buch>> Gruppen)
+
+@if (Model.Gruppen.Count == 0)
+{
+    <p class="admin-hinweis">Es gibt noch keine Bücher.</p>
+}
+
+@foreach (var gruppe in Model.Gruppen)
+{
+    <section class="auswahl-gruppe" data-auswahl-gruppe>
+        <h2 class="admin-untertitel">@gruppe.Key</h2>
+        @foreach (var buch in gruppe)
+        {
+            var bereits = Model.Auswahl.BereitsIds.Contains(buch.BuchID);
+            var suchtext = $"{buch.Titel} {buch.Reihe} {buch.Autor?.VollerName}".ToLowerInvariant();
+            <label class="auswahl-zeile @(bereits ? "bereits" : "")" data-auswahl-zeile data-suche="@suchtext">
+                <input type="checkbox" name="neueIds" value="@buch.BuchID" disabled="@bereits" checked="@bereits" />
+                <span class="auswahl-kreis" aria-hidden="true"></span>
+                <span class="listen-cover"><partial name="_Cover" model="buch" /></span>
+                <span class="listen-text">
+                    @if (buch.ReiheBandText is not null)
+                    {
+                        <span>@buch.ReiheBandText</span>
+                    }
+                    <span>@buch.Titel</span>
+                    @if (bereits)
+                    {
+                        <span class="admin-klein">bereits enthalten</span>
+                    }
+                </span>
+            </label>
+        }
+    </section>
+}
+
+<p class="admin-hinweis" data-auswahl-leer hidden>Keine Bücher gefunden.</p>

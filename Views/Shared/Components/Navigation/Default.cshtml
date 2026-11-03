@@ -31,6 +31,10 @@
             <li><a class="dropdown-item @(Model.Filter == "genre" ? "active" : "")" asp-controller="Home" asp-action="Index" asp-route-filter="genre">Genre</a></li>
             <li><a class="dropdown-item @(Model.Filter == "autor" ? "active" : "")" asp-controller="Home" asp-action="Index" asp-route-filter="autor">Autor</a></li>
             <li><a class="dropdown-item @(Model.Filter == "alter" ? "active" : "")" asp-controller="Home" asp-action="Index" asp-route-filter="alter">Altersklasse</a></li>
+            @if (Model.Benutzername is not null)
+            {
+                <li><a class="dropdown-item @(Model.Filter == "benutzer" ? "active" : "")" asp-controller="Home" asp-action="Index" asp-route-filter="benutzer">Benutzerdefiniert</a></li>
+            }
         </ul>
     </div>
 

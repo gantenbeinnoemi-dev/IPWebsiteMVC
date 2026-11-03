@@ -77,7 +77,7 @@
             <div class="cover-vorschau">
                 @if (!string.IsNullOrEmpty(Model.AktuellesCover))
                 {
-                    <img id="cover-vorschau" src="@Model.AktuellesCover" alt="Aktuelles Cover" />
+                    <img id="cover-vorschau" src="@Url.Action("BuchCover", "Bild", new { id = Model.BuchID })" alt="Aktuelles Cover" />
                 }
                 else
                 {

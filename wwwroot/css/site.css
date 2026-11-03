@@ -103,7 +103,7 @@ body {
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
-    padding: 8px 0 6px;
+    padding: 8px 32px 6px 0;
     scrollbar-width: none;
 }
 
@@ -900,3 +900,183 @@ form.inline {
         font-size: 16px;
     }
 }
+
+/* ---------------------------------------------------------------- Benutzerdefinierte Kategorien */
+
+/* Titel links, "Kategorie loeschen" rechts auf derselben Zeile */
+.gruppe-kopf {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-right: var(--seitenrand);
+    margin-bottom: 12px;
+}
+
+    .gruppe-kopf .gruppe-titel {
+        margin: 0;
+    }
+
+    .gruppe-kopf form {
+        margin: 0;
+    }
+
+/* Listenzeile: Eintrag links, Aktion (z.B. "Entfernen") rechts daneben */
+.liste-zeile {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+    .liste-zeile form {
+        margin: 0;
+    }
+
+/* Eintrag ohne Link (Entwurf einer neuen Kategorie): kein Hover-Effekt */
+.listen-eintrag.statisch:hover .listen-text,
+.listen-eintrag.statisch:focus-visible .listen-text {
+    color: #fff;
+    transform: none;
+}
+
+.listen-eintrag.statisch:hover .listen-text span {
+    background-size: 0 3px;
+}
+
+/* Eintrag, der ein <button> ist ("Buecher hinzufuegen") */
+button.plus-eintrag {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.kategorie-form label {
+    display: block;
+    margin: 14px 0 4px;
+    font-weight: 600;
+}
+
+.kategorie-form .admin-input {
+    width: 100%;
+    max-width: 420px;
+}
+
+/* Buecherauswahl */
+.auswahl-suche {
+    width: 100%;
+    max-width: 420px;
+    margin: 12px 0 8px;
+}
+
+.auswahl-gruppe[hidden],
+.auswahl-zeile[hidden] {
+    display: none;
+}
+
+.auswahl-zeile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 8px 0;
+    cursor: pointer;
+}
+
+    .auswahl-zeile input {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+    }
+
+    .auswahl-zeile .listen-cover {
+        width: 60px;
+        height: 90px;
+    }
+
+    .auswahl-zeile.bereits {
+        opacity: .55;
+        cursor: default;
+    }
+
+/* Kreis links vom Buch: leer = nicht angewaehlt, Haken im Kreis = angewaehlt */
+.auswahl-kreis {
+    position: relative;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    transition: background-color .2s, border-color .2s;
+}
+
+    .auswahl-kreis::after {
+        content: "";
+        position: absolute;
+        left: 8px;
+        top: 3px;
+        width: 7px;
+        height: 13px;
+        border: solid #fff;
+        border-width: 0 3px 3px 0;
+        transform: rotate(45deg);
+        opacity: 0;
+    }
+
+.auswahl-zeile input:checked + .auswahl-kreis {
+    background-color: var(--aktiv-blau);
+    border-color: var(--aktiv-blau);
+}
+
+    .auswahl-zeile input:checked + .auswahl-kreis::after {
+        opacity: 1;
+    }
+
+.auswahl-zeile input:focus-visible + .auswahl-kreis {
+    box-shadow: 0 0 0 3px #fff;
+}
+
+.auswahl-zeile:not(.bereits):hover .listen-text {
+    color: var(--aktiv-blau);
+}
+
+/* Zeilen mit Aktion (Entfernen): feste Breite, damit alle Buttons untereinander stehen */
+.liste-zeile.mit-aktion .listen-eintrag {
+    width: min(480px, 45vw);
+}
+
+/* Ueberschrift "Neue Kategorie" ist ein Link: beim Drueberfahren wird sie nur groesser (nicht blau, nicht unterstrichen) */
+.gruppe-link {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    transform-origin: 0 50%;
+    transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+    .gruppe-link:hover,
+    .gruppe-link:focus-visible {
+        color: #fff;
+        text-decoration: none;
+        transform: scale(1.12);
+    }
+
+/* Buttons "Hinzufuegen" / "Abbrechen": kleben unten rechts im Fenster, damit man nicht bis ans Ende der Liste scrollen muss */
+.aktionsleiste {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 24px;
+    padding: 18px 0 20px;
+    background: linear-gradient(to top, var(--hintergrund) 65%, transparent);
+}
+
+    .aktionsleiste .pill-btn {
+        background: var(--hintergrund);
+    }

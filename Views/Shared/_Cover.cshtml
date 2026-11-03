@@ -2,7 +2,7 @@
 
 @if (!string.IsNullOrEmpty(Model.CoverBildUrl))
 {
-    <img src="@Model.CoverBildUrl" alt="@Model.Titel" class="cover-img" />
+    <img src="@Url.Action("BuchCover", "Bild", new { id = Model.BuchID })" alt="@Model.Titel" class="cover-img" />
 }
 else
 {

@@ -55,3 +55,29 @@ document.querySelectorAll('input[type=file][data-vorschau]').forEach(function (i
         if (leer) leer.hidden = true;
     });
 });
+
+// Eintrag aus dem Entwurf einer neuen Kategorie entfernen (die versteckte BuchIds-Eingabe verschwindet mit der Zeile)
+document.addEventListener('click', function (e) {
+    var knopf = e.target.closest('[data-entfernen]');
+    if (!knopf) return;
+    var zeile = knopf.closest('[data-eintrag]');
+    if (zeile) zeile.remove();
+});
+
+// Suchfeld der Buecherauswahl: filtert nach Titel, Reihe und Autor; leere Autorgruppen werden ausgeblendet
+document.querySelectorAll('[data-auswahl-suche]').forEach(function (feld) {
+    var zeilen = document.querySelectorAll('[data-auswahl-zeile]');
+    var gruppen = document.querySelectorAll('[data-auswahl-gruppe]');
+    var leer = document.querySelector('[data-auswahl-leer]');
+    feld.addEventListener('input', function () {
+        var suche = feld.value.trim().toLowerCase();
+        zeilen.forEach(function (z) { z.hidden = suche !== '' && z.dataset.suche.indexOf(suche) === -1; });
+        var sichtbar = 0;
+        gruppen.forEach(function (g) {
+            var hat = g.querySelector('[data-auswahl-zeile]:not([hidden])') !== null;
+            g.hidden = !hat;
+            if (hat) sichtbar++;
+        });
+        if (leer) leer.hidden = sichtbar > 0 || gruppen.length === 0;
+    });
+});

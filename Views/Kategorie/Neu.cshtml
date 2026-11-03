@@ -1,0 +1,48 @@
+@model KategorieFormModel
+@{
+    ViewData["Title"] = "Neue Kategorie";
+}
+
+<div class="admin">
+    <h1>Neue Kategorie</h1>
+
+    <form asp-controller="Kategorie" asp-action="Neu" method="post" class="kategorie-form">
+        <div asp-validation-summary="ModelOnly" class="konto-fehler"></div>
+
+        <label asp-for="Name">Name der Kategorie</label>
+        <input asp-for="Name" class="admin-input" maxlength="100" autofocus placeholder="z.B. Lieblingsbücher" />
+        <span asp-validation-for="Name" class="konto-fehler"></span>
+
+        <h2 class="admin-untertitel">Bücher</h2>
+        <ul class="buch-liste">
+            @foreach (var buch in Model.Buecher)
+            {
+                <li class="liste-zeile mit-aktion" data-eintrag>
+                    <input type="hidden" name="BuchIds" value="@buch.BuchID" />
+                    <div class="listen-eintrag statisch">
+                        <span class="listen-cover"><partial name="_Cover" model="buch" /></span>
+                        <span class="listen-text">
+                            @if (buch.ReiheBandText is not null)
+                            {
+                                <span>@buch.ReiheBandText</span>
+                            }
+                            <span>@buch.Titel</span>
+                        </span>
+                    </div>
+                    <button type="button" class="pill-btn klein gefahr" data-entfernen>Entfernen</button>
+                </li>
+            }
+            <li class="liste-zeile">
+                <button type="submit" asp-controller="Kategorie" asp-action="NeuBuecher" formnovalidate class="listen-eintrag plus-eintrag">
+                    <span class="listen-cover"><img src="~/images/buch-plus.svg" alt="" class="cover-img" /></span>
+                    <span class="listen-text"><span>Bücher hinzufügen</span></span>
+                </button>
+            </li>
+        </ul>
+
+        <div class="aktionsleiste">
+            <button type="submit" class="pill-btn">Hinzufügen</button>
+            <a class="pill-btn" asp-controller="Home" asp-action="Index" asp-route-filter="benutzer">Abbrechen</a>
+        </div>
+    </form>
+</div>

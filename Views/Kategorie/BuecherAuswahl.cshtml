@@ -1,0 +1,41 @@
+@model BuchAuswahlModel
+@{
+    ViewData["Title"] = "Bücher hinzufügen";
+    var ziel = Model.IstNeu
+        ? (string.IsNullOrWhiteSpace(Model.KategorieName) ? "zur neuen Kategorie" : $"zur neuen Kategorie „{Model.KategorieName}“")
+        : $"zur Kategorie „{Model.KategorieName}“";
+    var gruppen = Model.Buecher.GroupBy(b => b.Autor?.VollerName ?? "Unbekannter Autor").ToList();
+}
+
+<div class="admin">
+    <h1>Bücher hinzufügen</h1>
+    <p class="admin-hinweis">Wähle die Bücher aus, die du @ziel hinzufügen möchtest.</p>
+
+    <input type="search" class="admin-input auswahl-suche" placeholder="Nach Titel oder Autor suchen" data-auswahl-suche autocomplete="off" />
+
+    @if (Model.IstNeu)
+    {
+        <form asp-controller="Kategorie" asp-action="NeuUebernehmen" method="post" class="auswahl-form">
+            <input type="hidden" name="Name" value="@Model.KategorieName" />
+            @foreach (var id in Model.BereitsIds)
+            {
+                <input type="hidden" name="BuchIds" value="@id" />
+            }
+            @await Html.PartialAsync("_AuswahlListe", (Model, gruppen))
+            <div class="aktionsleiste">
+                <button type="submit" class="pill-btn">Hinzufügen</button>
+                <button type="submit" class="pill-btn" asp-controller="Kategorie" asp-action="NeuFormular" formnovalidate>Abbrechen</button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <form asp-controller="Kategorie" asp-action="BuecherHinzufuegen" asp-route-id="@Model.KategorieId" method="post" class="auswahl-form">
+            @await Html.PartialAsync("_AuswahlListe", (Model, gruppen))
+            <div class="aktionsleiste">
+                <button type="submit" class="pill-btn">Hinzufügen</button>
+                <a class="pill-btn" asp-controller="Home" asp-action="Liste" asp-route-filter="benutzer" asp-route-id="@Model.KategorieId">Abbrechen</a>
+            </div>
+        </form>
+    }
+</div>

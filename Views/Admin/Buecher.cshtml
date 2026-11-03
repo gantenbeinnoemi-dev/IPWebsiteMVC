@@ -29,7 +29,7 @@
                     <td class="admin-thumb">
                         @if (!string.IsNullOrEmpty(b.CoverBildUrl))
                         {
-                            <img src="@b.CoverBildUrl" alt="" />
+                            <img src="@Url.Action("BuchCover", "Bild", new { id = b.BuchID })" alt="" />
                         }
                     </td>
                     <td>

@@ -11,16 +11,30 @@ public class NavigationViewComponent(KatalogService katalog) : ViewComponent
         var pageData = ViewContext.ViewData;
         var filter = pageData["Filter"] as string ?? "genre";
         var activeId = pageData["ActiveId"] as int?;
+        var benutzerId = UserClaimsPrincipal.BenutzerId();
+
+        if (filter == "benutzer" && benutzerId is null) filter = "genre";
 
         if (pageData["NavTabs"] is not List<NavTab> tabs)
         {
-            var gruppen = await katalog.GetGruppenAsync(filter);
-            tabs = gruppen
-                .Select(g => new NavTab(
-                    g.Name,
-                    Url.Action("Liste", "Home", new { filter, id = g.Id })!,
-                    Active: activeId == g.Id))
-                .ToList();
+            if (filter == "benutzer")
+            {
+                var kategorien = await katalog.GetKategorieNamenAsync(benutzerId!.Value);
+                tabs = kategorien
+                    .Select(k => new NavTab(k.Name, Url.Action("Liste", "Home", new { filter, id = k.Id })!, Active: activeId == k.Id))
+                    .ToList();
+                tabs.Add(new NavTab("+ Neue Kategorie", Url.Action("Neu", "Kategorie")!, Active: pageData["NeuAktiv"] is true));
+            }
+            else
+            {
+                var gruppen = await katalog.GetGruppenAsync(filter);
+                tabs = gruppen
+                    .Select(g => new NavTab(
+                        g.Name,
+                        Url.Action("Liste", "Home", new { filter, id = g.Id })!,
+                        Active: activeId == g.Id))
+                    .ToList();
+            }
         }
 
         var benutzername = User.Identity?.IsAuthenticated == true ? User.Identity.Name : null;

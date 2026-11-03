@@ -1,13 +1,14 @@
 @model BuchGruppe
 @{
     ViewData["Title"] = Model.Name;
+    var istBenutzer = ViewData["Filter"] as string == "benutzer";
 }
 
 <div class="liste-layout">
     <ul class="buch-liste">
         @foreach (var buch in Model.Buecher)
         {
-            <li>
+            <li class="liste-zeile @(istBenutzer ? "mit-aktion" : "")">
                 <a asp-action="Details" asp-route-id="@buch.BuchID" class="listen-eintrag">
                     <span class="listen-cover"><partial name="_Cover" model="buch" /></span>
                     <span class="listen-text">
@@ -17,6 +18,21 @@
                         }
                         <span>@buch.Titel</span>
                     </span>
+                </a>
+                @if (istBenutzer)
+                {
+                    <form asp-controller="Kategorie" asp-action="BuchEntfernen" asp-route-id="@Model.Id" asp-route-buchId="@buch.BuchID" method="post">
+                        <button type="submit" class="pill-btn klein gefahr">Entfernen</button>
+                    </form>
+                }
+            </li>
+        }
+        @if (istBenutzer)
+        {
+            <li class="liste-zeile">
+                <a asp-controller="Kategorie" asp-action="BuecherHinzufuegen" asp-route-id="@Model.Id" class="listen-eintrag">
+                    <span class="listen-cover"><img src="~/images/buch-plus.svg" alt="" class="cover-img" /></span>
+                    <span class="listen-text"><span>Bücher hinzufügen</span></span>
                 </a>
             </li>
         }
