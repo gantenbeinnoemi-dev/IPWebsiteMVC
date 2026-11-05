@@ -4,7 +4,7 @@
     var ziel = Model.IstNeu
         ? (string.IsNullOrWhiteSpace(Model.KategorieName) ? "zur neuen Kategorie" : $"zur neuen Kategorie „{Model.KategorieName}“")
         : $"zur Kategorie „{Model.KategorieName}“";
-    var gruppen = Model.Buecher.GroupBy(b => b.Autor?.VollerName ?? "Unbekannter Autor").ToList();
+    var gruppen = Model.Buecher.GroupBy(b => b.Autor?.VollerName ?? "Unbekannter Autor");
 }
 
 <div class="admin">

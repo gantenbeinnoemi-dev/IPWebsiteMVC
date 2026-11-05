@@ -7,13 +7,13 @@ namespace IPWebsiteMVC.Models;
 public class KategorieFormModel
 {
     [Required(ErrorMessage = "Bitte gib einen Namen für die Kategorie ein.")]
-    [StringLength(100, ErrorMessage = "Der Name darf höchstens 100 Zeichen lang sein.")]
+    [StringLength(50, ErrorMessage = "Der Name darf höchstens 50 Zeichen lang sein.")]
     [Display(Name = "Name der Kategorie")]
     public string Name { get; set; } = "";
 
     public List<int> BuchIds { get; set; } = [];
 
-    [BindNever, ValidateNever] public List<Buch> Buecher { get; set; } = [];
+    [BindNever, ValidateNever] public IEnumerable<Buch> Buecher { get; set; } = [];
 }
 
 public class BuchAuswahlModel

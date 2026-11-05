@@ -13,7 +13,7 @@
         <h1 class="detail-titel">@Model.Titel</h1>
         <p><strong>Autor:</strong> @(Model.Autor?.VollerName ?? "unbekannt")</p>
         <p><strong>Genre:</strong> @(Model.Genres.Count > 0 ? string.Join(", ", Model.Genres.Select(g => g.Bezeichnung)) : "-")</p>
-        <p><strong>Altersempfehlung:</strong> @(Model.Altersklassifikationen.Count > 0 ? string.Join(", ", Model.Altersklassifikationen.Select(a => a.Bezeichnung)) : "-")</p>
+        <p><strong>Alterskategorie:</strong> @(Model.Altersklassifikationen.Count > 0 ? string.Join(", ", Model.Altersklassifikationen.Select(a => a.Bezeichnung)) : "-")</p>
         @if (Model.ErscheinungsJahr is not null)
         {
             <p><strong>Erscheinungsjahr:</strong> @Model.ErscheinungsJahr</p>

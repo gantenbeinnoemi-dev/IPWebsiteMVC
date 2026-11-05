@@ -1,6 +1,6 @@
-@model (BuchAuswahlModel Auswahl, List<IGrouping<string, Buch>> Gruppen)
+@model (BuchAuswahlModel Auswahl, IEnumerable<IGrouping<string, Buch>> Gruppen)
 
-@if (Model.Gruppen.Count == 0)
+@if (Model.Auswahl.Buecher.Count == 0)
 {
     <p class="admin-hinweis">Es gibt noch keine Bücher.</p>
 }

@@ -206,8 +206,10 @@ public class AdminController(MyBooksDbContext db, IWebHostEnvironment env) : Con
 
     public async Task<IActionResult> Autoren()
     {
-        var autoren = await db.Autoren.Include(a => a.Buecher).OrderBy(a => a.Nachname).ThenBy(a => a.Vorname).ToListAsync();
-        var zeilen = autoren.Select(a => new AutorZeile(a.AutorID, a.Vorname, a.Nachname, a.LandID, a.Buecher.Count)).ToList();
+        var zeilen = await db.Autoren
+            .OrderBy(a => a.Nachname).ThenBy(a => a.Vorname)
+            .Select(a => new AutorZeile(a.AutorID, a.Vorname, a.Nachname, a.LandID, a.Buecher.Count))
+            .ToListAsync();
         return View(new AutorenModel(zeilen, await db.Laender.OrderBy(l => l.Name).ToListAsync()));
     }
 
@@ -260,14 +262,14 @@ public class AdminController(MyBooksDbContext db, IWebHostEnvironment env) : Con
         StammdatenModel? model = typ switch
         {
             "land" => new("land", "Länder", "Land", "Autoren",
-                (await db.Laender.Include(x => x.Autoren).OrderBy(x => x.LandID).ToListAsync())
-                    .Select(x => new StammdatenZeile(x.LandID, x.Name, x.Autoren.Count)).ToList()),
+                await db.Laender.OrderBy(x => x.LandID)
+                    .Select(x => new StammdatenZeile(x.LandID, x.Name, x.Autoren.Count)).ToListAsync()),
             "genre" => new("genre", "Genres", "Genre", "Bücher",
-                (await db.Genres.Include(x => x.Buecher).OrderBy(x => x.GenreID).ToListAsync())
-                    .Select(x => new StammdatenZeile(x.GenreID, x.Bezeichnung, x.Buecher.Count)).ToList()),
+                await db.Genres.OrderBy(x => x.GenreID)
+                    .Select(x => new StammdatenZeile(x.GenreID, x.Bezeichnung, x.Buecher.Count)).ToListAsync()),
             "alter" => new("alter", "Altersklassen", "Altersklasse", "Bücher",
-                (await db.Altersklassifikationen.Include(x => x.Buecher).OrderBy(x => x.AltersklassifikationID).ToListAsync())
-                    .Select(x => new StammdatenZeile(x.AltersklassifikationID, x.Bezeichnung, x.Buecher.Count)).ToList()),
+                await db.Altersklassifikationen.OrderBy(x => x.AltersklassifikationID)
+                    .Select(x => new StammdatenZeile(x.AltersklassifikationID, x.Bezeichnung, x.Buecher.Count)).ToListAsync()),
             _ => null
         };
         return model is null ? NotFound() : View(model);

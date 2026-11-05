@@ -102,7 +102,7 @@ CREATE TABLE Benutzer (
 CREATE TABLE Kategorie (
     KategorieID INT AUTO_INCREMENT PRIMARY KEY,
     BenutzerID  INT NOT NULL,
-    Name        VARCHAR(100) NOT NULL,
+    Name        VARCHAR(50) NOT NULL,
     ErstelltAm  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (BenutzerID, Name),
     FOREIGN KEY (BenutzerID) REFERENCES Benutzer(BenutzerID) ON DELETE CASCADE

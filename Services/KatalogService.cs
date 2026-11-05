@@ -25,14 +25,14 @@ public class KatalogService(MyBooksDbContext db)
     // ---------------------------------------------------------------- Benutzerdefinierte Kategorien
 
     /// <summary>Alle Kategorien des Benutzers (auch leere), Bücher in der Reihenfolge des Hinzufügens.</summary>
-    public async Task<List<BuchGruppe>> GetKategorienAsync(int benutzerId)
+    public async Task<IEnumerable<BuchGruppe>> GetKategorienAsync(int benutzerId)
     {
         var kategorien = await db.Kategorien
             .Where(k => k.BenutzerID == benutzerId)
             .Include(k => k.Eintraege).ThenInclude(e => e.Buch)
             .OrderBy(k => k.ErstelltAm).ThenBy(k => k.KategorieID)
             .ToListAsync();
-        return kategorien.Select(KategorieZuGruppe).ToList();
+        return kategorien.Select(KategorieZuGruppe);
     }
 
     public async Task<BuchGruppe?> GetKategorieAsync(int benutzerId, int id)
@@ -45,38 +45,38 @@ public class KatalogService(MyBooksDbContext db)
     }
 
     /// <summary>Nur Id und Name, für die Reiter in der Navigation.</summary>
-    public async Task<List<(int Id, string Name)>> GetKategorieNamenAsync(int benutzerId)
+    public async Task<IEnumerable<(int Id, string Name)>> GetKategorieNamenAsync(int benutzerId)
     {
         var zeilen = await db.Kategorien
             .Where(k => k.BenutzerID == benutzerId)
             .OrderBy(k => k.ErstelltAm).ThenBy(k => k.KategorieID)
             .Select(k => new { k.KategorieID, k.Name })
             .ToListAsync();
-        return zeilen.Select(z => (z.KategorieID, z.Name)).ToList();
+        return zeilen.Select(z => (z.KategorieID, z.Name));
     }
 
     private static BuchGruppe KategorieZuGruppe(Kategorie k) =>
         new(k.KategorieID, k.Name,
-            k.Eintraege.OrderBy(e => e.HinzugefuegtAm).ThenBy(e => e.BuchID).Select(e => e.Buch!).ToList());
+            k.Eintraege.OrderBy(e => e.HinzugefuegtAm).ThenBy(e => e.BuchID).Select(e => e.Buch!));
 
-    public async Task<List<BuchGruppe>> GetGruppenAsync(string filter)
+    public async Task<IEnumerable<BuchGruppe>> GetGruppenAsync(string filter)
     {
         switch (filter)
         {
             case "autor":
                 var autoren = await db.Autoren.Include(a => a.Buecher).OrderBy(a => a.Nachname).ToListAsync();
                 return autoren.Where(a => a.Buecher.Count > 0)
-                    .Select(a => new BuchGruppe(a.AutorID, a.VollerName, Sortiert(a.Buecher))).ToList();
+                    .Select(a => new BuchGruppe(a.AutorID, a.VollerName, Sortiert(a.Buecher)));
 
             case "alter":
                 var alter = await db.Altersklassifikationen.Include(a => a.Buecher).OrderBy(a => a.AltersklassifikationID).ToListAsync();
                 return alter.Where(a => a.Buecher.Count > 0)
-                    .Select(a => new BuchGruppe(a.AltersklassifikationID, a.Bezeichnung, Sortiert(a.Buecher))).ToList();
+                    .Select(a => new BuchGruppe(a.AltersklassifikationID, a.Bezeichnung, Sortiert(a.Buecher)));
 
             default:
                 var genres = await db.Genres.Include(g => g.Buecher).OrderBy(g => g.GenreID).ToListAsync();
                 return genres.Where(g => g.Buecher.Count > 0)
-                    .Select(g => new BuchGruppe(g.GenreID, g.Bezeichnung, Sortiert(g.Buecher))).ToList();
+                    .Select(g => new BuchGruppe(g.GenreID, g.Bezeichnung, Sortiert(g.Buecher)));
         }
     }
 
@@ -90,6 +90,6 @@ public class KatalogService(MyBooksDbContext db)
             .Include(b => b.Altersklassifikationen)
             .FirstOrDefaultAsync(b => b.BuchID == id);
 
-    private static List<Buch> Sortiert(IEnumerable<Buch> buecher) =>
-        buecher.OrderBy(b => b.BuchID).ToList();
+    private static IEnumerable<Buch> Sortiert(IEnumerable<Buch> buecher) =>
+        buecher.OrderBy(b => b.BuchID);
 }

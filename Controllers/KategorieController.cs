@@ -23,7 +23,6 @@ public class KategorieController(MyBooksDbContext db) : Controller
     public async Task<IActionResult> Neu(KategorieFormModel model)
     {
         model.Name = (model.Name ?? "").Trim();
-        model.BuchIds = model.BuchIds.Distinct().ToList();
 
         if (ModelState.IsValid && await db.Kategorien.AnyAsync(k => k.BenutzerID == BenutzerId && k.Name == model.Name))
             ModelState.AddModelError(nameof(model.Name), "Du hast bereits eine Kategorie mit diesem Namen.");
@@ -32,7 +31,7 @@ public class KategorieController(MyBooksDbContext db) : Controller
         var vorhandene = await db.Buecher.Where(b => model.BuchIds.Contains(b.BuchID)).Select(b => b.BuchID).ToListAsync();
         var jetzt = DateTime.Now;
         var kategorie = new Kategorie { BenutzerID = BenutzerId, Name = model.Name, ErstelltAm = jetzt };
-        foreach (var id in model.BuchIds.Where(vorhandene.Contains))
+        foreach (var id in model.BuchIds.Distinct().Where(vorhandene.Contains))
             kategorie.Eintraege.Add(new KategorieBuch { BuchID = id, HinzugefuegtAm = jetzt });
         db.Kategorien.Add(kategorie);
 
@@ -63,14 +62,14 @@ public class KategorieController(MyBooksDbContext db) : Controller
     {
         ViewData["Filter"] = "benutzer";
         ViewData["NeuAktiv"] = true;
-        return View("BuecherAuswahl", await AuswahlErstellen(null, (model.Name ?? "").Trim(), model.BuchIds.Distinct().ToList()));
+        return View("BuecherAuswahl", await AuswahlErstellen(null, (model.Name ?? "").Trim(), model.BuchIds));
     }
 
     /// <summary>Bestätigung der Auswahl für eine noch nicht angelegte Kategorie: zurück zum Formular mit den neuen Büchern.</summary>
     [HttpPost]
     public Task<IActionResult> NeuUebernehmen(KategorieFormModel model, List<int> neueIds)
     {
-        model.BuchIds = model.BuchIds.Concat(neueIds).Distinct().ToList();
+        model.BuchIds.AddRange(neueIds);
         ModelState.Clear();
         return FormularZeigen(model);
     }
@@ -78,7 +77,6 @@ public class KategorieController(MyBooksDbContext db) : Controller
     private async Task<IActionResult> FormularZeigen(KategorieFormModel model)
     {
         model.Buecher = await BuecherInReihenfolge(model.BuchIds);
-        model.BuchIds = model.Buecher.Select(b => b.BuchID).ToList();
         ViewData["Filter"] = "benutzer";
         ViewData["NeuAktiv"] = true;
         return View("Neu", model);
@@ -150,10 +148,10 @@ public class KategorieController(MyBooksDbContext db) : Controller
         return abfrage.FirstOrDefaultAsync();
     }
 
-    private async Task<List<Buch>> BuecherInReihenfolge(List<int> ids)
+    private async Task<IEnumerable<Buch>> BuecherInReihenfolge(List<int> ids)
     {
         var gefunden = await db.Buecher.Where(b => ids.Contains(b.BuchID)).ToListAsync();
-        return ids.Distinct().Select(id => gefunden.FirstOrDefault(b => b.BuchID == id)).OfType<Buch>().ToList();
+        return ids.Distinct().Select(id => gefunden.FirstOrDefault(b => b.BuchID == id)).OfType<Buch>();
     }
 
     private async Task<BuchAuswahlModel> AuswahlErstellen(int? kategorieId, string name, List<int> bereits)
